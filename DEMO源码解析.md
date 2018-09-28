@@ -61,3 +61,9 @@ builder.save()
 * [2] 指定inference过程中的输入/输出
 
 其他参数见[REF](https://www.tensorflow.org/api_docs/python/tf/saved_model/builder/SavedModelBuilder)
+
+
+### TODO
+1. 如何构造signature_def_map
+2. 如何使用python client访问TS服务
+3. 如何使用c++ client访问TS服务
