@@ -1,6 +1,13 @@
 本文档对Tensorflow Serving DEMO代码进行了详细说明.
 
-1. 模型训练和保存
+使用Tensorflow Serving部署服务包含两个步骤：
+* (1) 使用`SavedModelBuilder`将模型保存;
+* (2) 使用Docker和TS镜像加载模型，提供端口服务;
+* (3) 服务端访问端口，获取服务。
+
+## 保存模型 `mnist_saved_model.py`
+
+
 
 ```python
 # Copyright 2016 Google Inc. All Rights Reserved.
