@@ -1,5 +1,11 @@
 本文档记录了Tensorflow Serving的环境搭建及Demo测试过程
 
+测试环境：
+* Ubuntu 18.04.1 LTS
+* 7.7 GiB
+* Intel® Core™ i5-8250U CPU @ 1.60GHz × 8 
+* Intel® UHD Graphics 620 (Kabylake GT2)
+
 ### 环境配置
 
 1. 安装tensorflow
