@@ -138,3 +138,49 @@ tensorflow_model_server --port=8500 --model_name="fashion" --model_base_path="/h
 
 ## 编写client服务脚本
 
+client服务脚本的功能为“读取一张图片，输出其类别概率”。
+
+python版本
+```python
+# client.py
+
+from __future__ import print_function
+import grpc, cv2
+import tensorflow as tf
+
+from tensorflow_serving.apis import predict_pb2
+from tensorflow_serving.apis import prediction_service_pb2_grpc
+import numpy as np
+
+tf.app.flags.DEFINE_string('server', 'localhost:8500', 'PredictionService host:port')
+tf.app.flags.DEFINE_string('image_path', '', 'path to image in JPEG format')
+FLAGS = tf.app.flags.FLAGS
+
+class_names = ['T-shirt-top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    
+def main(_):
+    channel = grpc.insecure_channel(FLAGS.server)
+    stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
+    
+    im = cv2.imread(FLAGS.image_path, 0)
+    im = im / 255.0
+    im = im.astype(np.float32)
+    data = im.reshape(-1, 28, 28)
+
+    request = predict_pb2.PredictRequest()
+    request.model_spec.name = 'fashion'
+    request.model_spec.signature_name = 'classification'
+    request.inputs['images_name'].CopyFrom(
+        tf.contrib.util.make_tensor_proto(data, shape=[1, 28, 28]))
+    response = stub.Predict(request, 10.0)  # 10 secs timeout
+    probs = response.outputs["outputs_name"].float_val
+    results = [(i,j) for i,j in zip(class_names, probs)]
+    results = sorted(results, key=lambda x:x[1], reverse=True)
+    print("Class: ", results[0][0], ", Score: ", results[0][1])
+
+
+if __name__ == '__main__':
+    tf.app.run()
+```
+
+
